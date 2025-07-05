@@ -65,3 +65,66 @@ Uses a WebSocket client like Postman or browser.
 | Private  | `ws://127.0.0.1:8000/ws/private/<username>/`   |
 | Group    | `ws://127.0.0.1:8000/ws/chat/group/<room_name>/` |
 
+
+## How to Use the Application
+
+### Prerequisites:
+
+Ensure the server is running:
+python manage.py runserver
+
+## Step 1: Register Users
+
+Endpoint: POST /api/register
+
+Request Body:
+{
+  "username": "ila",
+  "password": "password123"
+}
+
+This registers users to the system.
+
+## Step 2: Login Users
+
+Endpoint: POST /api/login
+
+Request Body:
+{
+  "username": "ila",
+  "password": "password123"
+}
+
+A successful response means login is verified.
+
+## Step 3: Create a Group Chat Room with Members
+
+Endpoint: POST /api/rooms/with-members
+
+Request Body:
+{
+  "name": "friends",
+  "members": ["ila", "kaushal"]
+}
+Now both users are part of the "friends" chat room.
+
+
+## Step 4: Connect to WebSocket for Group Chat
+
+WebSocket URL (in Postman):
+ws://127.0.0.1:8000/ws/chat/group/friends/
+
+Connect using Postman’s "New WebSocket Request".
+
+## Step 5: Send a Group Message
+
+WebSocket message (JSON format):
+{
+  "username": "ila",
+  "message": "Hey everyone!"
+}
+
+All members in the "friends" room will receive this message in real-time.
+
+![image](https://github.com/user-attachments/assets/2d4c71f4-12dc-4820-ac78-c8032a886465)
+
