@@ -127,6 +127,7 @@ WebSocket message (JSON format):
 All members in the "friends" room will receive this message in real-time.
 
 ![image](https://github.com/user-attachments/assets/2d4c71f4-12dc-4820-ac78-c8032a886465)
+
 ![image](https://github.com/user-attachments/assets/477de579-10a8-413d-bdc8-e564eeb5411c)
 
 
@@ -154,6 +155,7 @@ Message:
 Only Kaushal and Ila can see these messages.
 
 ![image](https://github.com/user-attachments/assets/db27773a-e128-4132-9f15-9d4da605fa5b)
+
 ![image](https://github.com/user-attachments/assets/7854a353-7e2d-4970-a1ca-ed8f9756470b)
 
 ## Step 7: Connect to WebSocket for General Room
