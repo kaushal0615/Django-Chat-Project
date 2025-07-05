@@ -8,39 +8,49 @@ class ChatConsumer(AsyncWebsocketConsumer):
         self.room_name = self.scope["url_route"]["kwargs"]["room_name"]
         self.room_group_name = f"chat_{self.room_name}"
 
-        await self.channel_layer.group_add(
-            self.room_group_name,
-            self.channel_name
-        )
-
+        await self.channel_layer.group_add(self.room_group_name, self.channel_name)
         await self.accept()
 
     async def disconnect(self, close_code):
-        await self.channel_layer.group_discard(
-            self.room_group_name,
-            self.channel_name
-        )
+        await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
 
     async def receive(self, text_data):
-        text_data_json = json.loads(text_data)
-        username = text_data_json.get("username")
-        message = text_data_json["message"]
+        data = json.loads(text_data)
+        username = data.get("username")
+        message = data.get("message")
+        typing = data.get("typing")
 
-        # ✅ call async version of ORM query
+        # Get user object (optional)
         user = await self.get_user(username)
 
-        await self.channel_layer.group_send(
-            self.room_group_name,
-            {
-                "type": "chat_message",
-                "message": message,
-                "username": user.username if user else "Anonymous"
-            }
-        )
+        if typing:
+            await self.channel_layer.group_send(
+                self.room_group_name,
+                {
+                    "type": "user_typing",
+                    "username": user.username if user else "Anonymous"
+                }
+            )
+        elif message:
+            await self.channel_layer.group_send(
+                self.room_group_name,
+                {
+                    "type": "chat_message",
+                    "message": message,
+                    "username": user.username if user else "Anonymous"
+                }
+            )
 
     async def chat_message(self, event):
         await self.send(text_data=json.dumps({
-            "message": event["message"],
+            "type": "message",
+            "username": event["username"],
+            "message": event["message"]
+        }))
+
+    async def user_typing(self, event):
+        await self.send(text_data=json.dumps({
+            "type": "typing",
             "username": event["username"]
         }))
 
@@ -51,3 +61,45 @@ class ChatConsumer(AsyncWebsocketConsumer):
         except User.DoesNotExist:
             return None
 
+class PrivateChatConsumer(AsyncWebsocketConsumer):
+    async def connect(self):
+        self.other_user = self.scope["url_route"]["kwargs"]["username"]
+        self.current_user = None  # will set after receiving first message
+        self.room_group_name = None
+        await self.accept()
+
+    async def disconnect(self, close_code):
+        if self.room_group_name:
+            await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
+
+    async def receive(self, text_data):
+        data = json.loads(text_data)
+
+        # First message must include username
+        if not self.current_user:
+            self.current_user = data.get("username")
+            if not self.current_user:
+                await self.send(text_data=json.dumps({
+                    "error": "Missing username"
+                }))
+                return
+
+            # consistent ordering to avoid duplication
+            user1, user2 = sorted([self.current_user, self.other_user])
+            self.room_group_name = f"private_{user1}_{user2}"
+            await self.channel_layer.group_add(self.room_group_name, self.channel_name)
+
+        await self.channel_layer.group_send(
+            self.room_group_name,
+            {
+                'type': 'private_message',
+                'message': data.get('message'),
+                'username': self.current_user
+            }
+        )
+
+    async def private_message(self, event):
+        await self.send(text_data=json.dumps({
+            'message': event['message'],
+            'username': event['username']
+        }))
