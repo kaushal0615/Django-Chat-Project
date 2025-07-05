@@ -1,0 +1,28 @@
+# Core Frameworks
+Django>=4.2,<5.0
+django-ninja>=0.18.0
+
+# WebSocket Support
+channels>=4.0.0
+
+# Redis backend for Channels
+channels-redis>=4.1.0
+
+# Redis client
+redis>=5.0.0
+
+# Environment variable management (optional but recommended)
+python-dotenv>=1.0.0
+
+# ASGI server (production use)
+uvicorn[standard]>=0.29.0
+
+# Type checking (optional but helpful)
+types-redis
+types-requests
+
+# Dev tools (optional)
+black
+isort
+
+python-dotenv>=1.0.0
