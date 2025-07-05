@@ -16,14 +16,23 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from chat.api import api
+from ninja import NinjaAPI
+
+from apps.chat.api.router import router as chat_router
+from apps.users.api import router as users_router
 
 from django.conf import settings
 from django.conf.urls.static import static
 
+api = NinjaAPI(title="ChatNinja API", version="1.0")
+
+# Mount routers to desired paths
+api.add_router("/chat/", chat_router)
+api.add_router("/users/", users_router)
+
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/', api.urls),
+    path('api/', api.urls),  # So full path is /api/users/login etc.
 ]
 
 if settings.DEBUG:
