@@ -23,4 +23,5 @@ RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
 # Start server with Django's development server (manage.py)
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+CMD ["uvicorn", "chatninja.asgi:application", "--host", "0.0.0.0", "--port", "8000"]
+
