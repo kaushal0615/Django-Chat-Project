@@ -11,22 +11,22 @@ https://docs.djangoproject.com/en/5.2/howto/deployment/asgi/
 import os
 import django
 
+# ✅ Configure settings **before any Django imports**
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'chatninja.settings')
 django.setup()
 
+# ✅ Now safe to import Django modules that rely on settings
 from django.core.asgi import get_asgi_application
 from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.auth import AuthMiddlewareStack
-import apps.chat
+from apps.chat.routing import websocket_urlpatterns
 
 application = ProtocolTypeRouter({
-    # Handles traditional Django views, admin, API
     "http": get_asgi_application(),
-
-    # Handles WebSocket connections for chat
     "websocket": AuthMiddlewareStack(
         URLRouter(
-            apps.chat.chat.routing.websocket_urlpatterns
+            websocket_urlpatterns
         )
     ),
 })
+
