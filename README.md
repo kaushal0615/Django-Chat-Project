@@ -68,10 +68,35 @@ Uses a WebSocket client like Postman or browser.
 
 ## How to Use the Application
 
+### Setup
+
+1. Clone the repository
+```
+git clone https://github.com/your-username/django-chat-app.git
+cd django-chat-app
+```
+2. Create & activate virtual environment
+```
+python3 -m venv venv
+source venv/bin/activate
+```
+3. Install dependencies
+```
+pip install -r requirements.txt
+```
+4. Apply migrations
+```
+python manage.py migrate
+```
+5. Run the development server
+```
+ uvicorn chatninja.asgi:application --host 0.0.0.0 --port 8000
+```
+
 ### Prerequisites:
 
 Ensure the server is running:
-python manage.py runserver
+ uvicorn chatninja.asgi:application --host 0.0.0.0 --port 8000
 
 ## Step 1: Register Users
 
