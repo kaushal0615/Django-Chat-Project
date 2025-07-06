@@ -46,7 +46,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'apps',        # our Django app (chat logic: models, views, API, WebSocket)
+    'apps.chat',
+    'apps.users',   # our Django app (chat logic: models, views, API, WebSocket)
     'channels',    # adds Django Channels support for async & WebSocket handling
     'ninja',       # enables the Django Ninja API framework for REST APIs
 ]
