@@ -9,3 +9,5 @@ websocket_urlpatterns = [
     path("ws/private/<str:username>/", PrivateChatConsumer.as_asgi(), name="private-chat"),
     path("ws/group/<str:room_name>/", GroupChatConsumer.as_asgi(), name="group-chat"),
 ]
+
+

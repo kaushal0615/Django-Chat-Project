@@ -12,7 +12,7 @@ channels-redis>=4.1.0
 redis>=5.0.0
 
 # Environment variable management (optional but recommended)
-python-dotenv>=1.0.0
+python-dotenv
 
 # ASGI server (production use)
 uvicorn[standard]>=0.29.0
